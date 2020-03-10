@@ -61,7 +61,6 @@ neuron = Neuron(nweights=2)
 # 3. Analysing the best weight and bias to the proposed problem
 print "# Training"
 threshold_result, linear_result, sigmoid_result = [], [], []
-t_class, l_class, s_class = [], [], []
 
 counter = 1
 max_c = len(np.arange(-5,5,0.5))
@@ -75,6 +74,7 @@ for bias in np.arange(-5,5,0.5):
 			sigmoid_error = 0
 
 			# b. testing the weights for each input
+			t_class, l_class, s_class = [], [], []
 			for i in range(number_of_examples):
 				x, y = np.array([v1[i],v2[i]]),v3[i]
 
@@ -91,37 +91,56 @@ for bias in np.arange(-5,5,0.5):
 				linear_error += abs(l_class[-1]-y)
 				sigmoid_error += abs(s_class[-1]-y)
 			
-			threshold_result.append([bias,w1,w2,threshold_error])
-			linear_result.append([bias,w1,w2,linear_error])
-			sigmoid_result.append([bias,w1,w2,sigmoid_error])
+			threshold_result.append([bias,w1,w2,threshold_error,t_class])
+			linear_result.append([bias,w1,w2,linear_error,l_class])
+			sigmoid_result.append([bias,w1,w2,sigmoid_error,s_class])
 	counter += 1
 
 # 4. Getting the best bias and weights to the problem for each activation func
-min_error, t_best_config = 99999999, None
+min_error, t_best_config, t_class = 99999999, None, None
 for config in threshold_result:
 	if config[3] < min_error:
 		min_error = config[3]
-		t_best_config = config
+		t_best_config = config[0:-1]
+		t_class = config[4]
 print "Threshold:",t_best_config
 
-min_error, l_best_config = 99999999, None
+min_error, l_best_config, l_class = 99999999, None, None
 for config in linear_result:
 	if config[3] < min_error:
 		min_error = config[3]
-		l_best_config = config
+		l_best_config = config[0:-1]
+		l_class = config[4]
 print "Linear:",l_best_config
 
-min_error, s_best_config = 99999999, None
+min_error, s_best_config, s_class = 99999999, None, None
 for config in sigmoid_result:
 	if config[3] < min_error:
 		min_error = config[3]
-		s_best_config = config
+		s_best_config = config[0:-1]
+		s_class = config[4]
 print "Sigmoid:",s_best_config
 
 # 4. Plotting the result
-plt.subplot(1, 3, 1)
-colors = ['r' if t_class[i] == 1 else 'b' for i in range(len(v1))]
-plt.scatter(v1,v2,color=colors)
+fig = plt.figure()
+ax1 = fig.add_subplot(131)
+ax2 = fig.add_subplot(132)
+ax3 = fig.add_subplot(133)
+
+plt.title('classification')
+ax1.title.set_text('Threshold')
+ax2.title.set_text('Linear')
+ax3.title.set_text('Sigmoid')
+
+colors = ['red' if t_class[i] == 1 else 'blue' for i in range(len(t_class))]
+ax1.scatter(v1,v2,color=colors)
+
+colors = ['red' if l_class[i] == 1 else 'blue' for i in range(len(l_class))]
+ax2.scatter(v1,v2,color=colors)
+
+colors = ['red' if s_class[i] == 1 else 'blue' for i in range(len(s_class))]
+ax3.scatter(v1,v2,color=colors)
+
 plt.show()
 
 # That's all folks :)
