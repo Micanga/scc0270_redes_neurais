@@ -108,4 +108,4 @@ for config in sigmoid_result:
 		best_config = config
 print "Sigmoid:",best_config
 
-# 4. Plotting the result
+# That's all folks :)
