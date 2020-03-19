@@ -67,7 +67,7 @@ class Perceptron:
 		return result
 
 	def euclidean_dist(self,p,q):
-		return sqrt(sum([(p[i] - q[i])**2 for i in range(len(self.weight))]))
+		return sqrt(sum([(float(p[i]) - float(q[i]))**2 for i in range(len(self.weight))]))
 
 	def group_distances(self,x,yp):
 		dist = np.zeros(2)
@@ -99,55 +99,17 @@ class Perceptron:
 
 		return group, dist
 
-	def farest(self,x):
-		farx, max_dist = None, 0
-		for xi in x:
-			dist = self.euclidean_dist(xi,self.weight)
-			if max_dist < dist:
-				max_dist = dist
-				farx = xi
-		return farx
-
-	def nearest(self,x):
-		nearx, min_dist = None, 99999999
-		for xi in x:
-			dist = self.euclidean_dist(xi,self.weight)
-			if min_dist > dist:
-				min_dist = dist
-				nearx = xi
-		return nearx
-
 	def hebbian_train(self,x,y,eta=1):
 		result = []
 
 		# a. checking the current group distances
-		yp = self.sigmoid_classify(x)
+		yp = self.classify(x)
 		group, dist = self.group_distances(x,yp)
 
 		# b. minimizing the distance
-		prev_dist = 999999
-		while(abs(sum(dist - prev_dist)) > 0.1):
-			prev_dist = dist
-
-			if len(group[0])*len(group[1]) > 0:
-				if len(group[0]) < len(group[1]):
-					coef = float(len(group[1]))/float(len(group[0]))
-				else:
-					coef = float(len(group[0]))/float(len(group[1]))
-			elif len(group[0]) > 0:
-				coef = len(group[0])
-			else:
-				coef = len(group[1])
-
-			print coef
-			self.weight = self.weight +\
-				eta*(self.farest(x) - self.nearest(x))*(coef)
-			self.bias = self.bias + eta*(coef)
-
-			yp = self.sigmoid_classify(x)
-			group, dist = self.group_distances(x,yp)
-			result.append(abs(sum(y - yp)))
-			print dist,self.weight,self.bias
+		prev_dist, delta = [999999,999999], 1
+		while(abs(delta[0]) > 0.001 and abs(delta[1]) > 0.001):
+			# how to do??
 
 		return result
 
