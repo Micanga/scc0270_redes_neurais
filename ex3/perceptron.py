@@ -109,7 +109,7 @@ class Perceptron:
 		# b. minimizing the distance
 		prev_dist, delta = [999999,999999], 1
 		while(abs(delta[0]) > 0.001 and abs(delta[1]) > 0.001):
-			# how to do??
+			break # how to do??
 
 		return result
 
