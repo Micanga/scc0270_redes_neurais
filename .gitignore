@@ -1,2 +1,4 @@
 *.pyc
 */*.pyc
+*Pickle
+*.h5py
